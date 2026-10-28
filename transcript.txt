@@ -1,0 +1,9 @@
+Meeting: Weekly Project Sync
+
+Ravi: Good morning everyone. Let's start with the API work.
+Priya: I will finish the API design doc by Friday.
+Ravi: Great. We also decided to use React for the frontend.
+Kumar: I am worried the server cost may go up next month.
+Ravi: Okay, noted. Someone should update the deployment doc soon.
+Priya: For pricing, let's decide next week.
+Ravi: Kumar, please send the test report to the client by Wednesday.
