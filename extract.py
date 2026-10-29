@@ -12,10 +12,12 @@ client = OpenAI(
     max_retries=1,
 )
 
-MODELS = [
-    "nvidia/nemotron-3.5-bolt-e4b",
+model_1 = [
+    
     "openai/gpt-oss-20b",
+    "nvidia/nemotron-3.5-bolt-e4b"
 ]
+
 
 ALLOWED_TYPES = {"action_item", "decision", "decision_pending", "risk"}
 
@@ -31,6 +33,29 @@ SYSTEM_PROMPT = (
     "Vague words like 'soon', 'later', 'ASAP' are NOT deadlines: write 'unknown'. "
     "For risks, write 'unknown' for deadline unless a due date is stated. "
     "For a risk, the owner is 'unknown' unless someone is clearly assigned to handle it."
+    "Classification rules: "
+"An action_item is a task someone must do, or a task the group asks someone to do. "
+"A decision is a choice the group has already made. "
+"A decision_pending is a choice that has not been made yet and still needs to be decided. "
+"Do not label a task as a decision just because it includes a date or deadline. "
+"Do not label a future discussion or decision date as a task deadline. "
+"Only use a deadline when it is explicitly attached to an action_item. "
+"Return each distinct item only once. Do not invent, split, or duplicate items. "
+"Use the shortest clear description of each item while preserving its meaning. "
+"Date rules: For an action_item, use a stated date or time period as its deadline "
+"when it describes when that task should be completed. For a decision_pending, "
+"use a stated date or time period as its deadline when it describes when the "
+"decision must be made. A date alone does not create a separate item. "
+"Do not create an action_item to handle a risk unless the transcript explicitly "
+"assigns or requests that task. Extract every explicitly stated task, even when "
+"it appears in the same sentence as a decision or another task. "
+"Owner rule: Name someone as owner only when the transcript explicitly assigns "
+"the task or responsibility to them. Merely mentioning a task does not make "
+"the speaker its owner; otherwise use 'unknown'. "
+"For a decision_pending, treat a stated time period for making the decision "
+"as its deadline, and include that time period in the decision_pending item. "
+"Do not create an action item to mitigate, investigate, or handle a risk unless "
+"the transcript explicitly says someone should do that."
 )
 
 FEW_SHOT = [
@@ -69,10 +94,10 @@ def extract_items(transcript_text):
     messages.append({"role": "user", "content": "Transcript: " + transcript_text})
 
     last_error = None
-    for model in MODELS:
+    for model in model_1:
         try:
             response = client.chat.completions.create(
-                model=model,
+                model= model, 
                 messages=messages,
                 temperature=0,
                 max_tokens=3000,

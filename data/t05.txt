@@ -1,0 +1,6 @@
+Meeting: Release Prep
+
+Kumar: Priya, please update the release notes by Monday.
+Priya: Yes, I will update the release notes by Monday.
+Kumar: Good. Also Priya, please run the final tests on Tuesday.
+Priya: Okay, will do.

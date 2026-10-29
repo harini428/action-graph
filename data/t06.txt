@@ -1,0 +1,6 @@
+Meeting: Tech Stack
+
+Ravi: Earlier we said we will use React.
+Divya: I checked again. We decided to use Vue instead.
+Ravi: Fine, Vue it is.
+Divya: Ravi, please set up the Vue project by Wednesday.

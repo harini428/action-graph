@@ -1,0 +1,9 @@
+Meeting: Website Review
+
+Divya: Let's review the website.
+Arun: The homepage loads slowly. Someone should fix it.
+Divya: Agreed. We also decided to move to the new hosting plan.
+Arun: Okay, sounds good.
+Kumar: When will you finish the website?
+Arun: Maybe it takes 2 to 3 days.
+Divya: We will finish it on 2 Nov.

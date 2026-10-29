@@ -1,0 +1,9 @@
+Meeting: Weekly Sync
+
+Priya: Hi all. The client call went well.
+Kumar: Good. They want the demo before the 15th.
+Priya: Right. Kumar, please prepare the demo by the 12th.
+Kumar: Okay. I am a bit worried the backend is not stable yet.
+Priya: Noted. We also agreed to postpone the mobile app.
+Divya: Yes. Let's decide the budget next month.
+Priya: Fine. Someone should email the client the agenda.

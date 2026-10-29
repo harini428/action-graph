@@ -1,0 +1,7 @@
+Meeting: Risk Review
+
+Ravi: I am worried the vendor may delay the delivery.
+Anita: Raj, you own that risk. Please handle it.
+Raj: Okay, I will handle it.
+Ravi: Also, the server may crash during the sale.
+Anita: Let's keep that in mind.

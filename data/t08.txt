@@ -1,0 +1,6 @@
+Meeting: Budget Discussion
+
+Divya: We need to choose a cloud provider.
+Arun: Let's decide next week after the cost comparison.
+Divya: Agreed. Arun, please share the cost comparison by Thursday.
+Arun: Okay.
