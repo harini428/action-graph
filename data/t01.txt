@@ -1,0 +1,8 @@
+Meeting: Sprint Planning
+
+Anita: Let's go over the sprint.
+Raj: I will fix the login bug by Thursday.
+Anita: Good. We decided to use PostgreSQL for the database.
+Raj: I am worried the payment API may fail during testing.
+Anita: Meena, please write the test cases by Friday.
+Meena: Okay, I will do it.
