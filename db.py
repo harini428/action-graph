@@ -80,3 +80,31 @@ def get_items(meeting_id):
         return cur.fetchall()
     finally:
         conn.close()
+def get_all_items(only_review=False):
+    conn = get_conn()
+    try:
+        cur = conn.cursor(dictionary=True)
+        sql = (
+            "SELECT i.id, i.type, i.task, i.owner, i.deadline, "
+            "i.needs_review, i.status, m.title AS meeting_title "
+            "FROM items i JOIN meetings m ON i.meeting_id = m.id"
+        )
+        if only_review:
+            sql += " WHERE i.needs_review = 1"
+        sql += " ORDER BY i.id DESC"
+        cur.execute(sql)
+        return cur.fetchall()
+    finally:
+        conn.close()
+
+
+def mark_done(item_id):
+    conn = get_conn()
+    try:
+        cur = conn.cursor()
+        cur.execute("UPDATE items SET status = 'done' WHERE id = %s", (item_id,))
+        conn.commit()
+    finally:
+        conn.close()
+
+

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ActionGraph</title>
+  <style>
+    :root {
+      --navy: #0f2a43;
+      --blue: #1d4ed8;
+      --bg: #f4f6f9;
+      --card: #ffffff;
+      --border: #e2e8f0;
+      --text: #1e293b;
+      --muted: #64748b;
+      --red: #b91c1c;
+      --red-bg: #fee2e2;
+      --green: #15803d;
+      --green-bg: #dcfce7;
+      --amber: #b45309;
+      --amber-bg: #fef3c7;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    /* Header */
+    .topbar {
+      background: var(--navy);
+      color: #fff;
+      padding: 18px 40px;
+    }
+    .topbar h1 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: .3px; }
+    .topbar p { margin: 4px 0 0; font-size: 13px; color: #aebfd1; }
+
+    .container { max-width: 1200px; margin: 28px auto; padding: 0 24px; }
+
+    /* Summary cards */
+    .stats { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+    .stat {
+      flex: 1; min-width: 180px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--blue);
+      border-radius: 8px;
+      padding: 16px 20px;
+    }
+    .stat.review { border-left-color: var(--amber); }
+    .stat.done { border-left-color: var(--green); }
+    .stat .num { font-size: 30px; font-weight: 700; }
+    .stat .label { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+
+    /* Filters */
+    .filters { margin-bottom: 16px; }
+    .filters a {
+      display: inline-block;
+      padding: 8px 18px;
+      margin-right: 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--card);
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .filters a:hover { border-color: var(--blue); }
+    .filters a.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+
+    /* Table */
+    .table-wrap {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+    table { border-collapse: collapse; width: 100%; font-size: 14px; }
+    th {
+      background: #f8fafc;
+      color: var(--muted);
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      border-bottom: 1px solid var(--border);
+    }
+    td { padding: 14px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f8fafc; }
+    tr.done-row td { color: #94a3b8; }
+    .task { font-weight: 500; }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .badge.unknown { background: var(--red-bg); color: var(--red); }
+    .badge.review { background: var(--amber-bg); color: var(--amber); }
+    .badge.open { background: #dbeafe; color: var(--blue); }
+    .badge.done { background: var(--green-bg); color: var(--green); }
+    .badge.type { background: #eef2f7; color: var(--muted); font-weight: 500; }
+    .ok { color: var(--muted); }
+
+    /* Button */
+    button {
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    button:hover { background: #1e40af; }
+
+    .empty { text-align: center; padding: 40px; color: var(--muted); }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <h1>ActionGraph</h1>
+    <p>Meeting action items, extracted and reviewed</p>
+  </div>
+
+  <div class="container">
+
+    <div class="stats">
+      <div class="stat"><div class="num">{{ stats.total }}</div><div class="label">Total items</div></div>
+      <div class="stat review"><div class="num">{{ stats.review }}</div><div class="label">Needs review</div></div>
+      <div class="stat done"><div class="num">{{ stats.done }}</div><div class="label">Completed</div></div>
+    </div>
+
+    <div class="filters">
+      <a href="/" class="{{ '' if only_review else 'active' }}">All items</a>
+      <a href="/?filter=review" class="{{ 'active' if only_review else '' }}">Needs review</a>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <tr>
+          <th>Meeting</th><th>Type</th><th>Task</th><th>Owner</th>
+          <th>Deadline</th><th>Review</th><th>Status</th><th>Action</th>
+        </tr>
+        {% for item in items %}
+        <tr class="{{ 'done-row' if item.status == 'done' else '' }}">
+          <td>{{ item.meeting_title }}</td>
+          <td><span class="badge type">{{ item.type|replace('_', ' ')|title }}</span></td>
+          <td class="task">{{ item.task }}</td>
+
+          <td>
+            {% if (item.owner or 'unknown')|lower == 'unknown' %}
+              <span class="badge unknown">unknown</span>
+            {% else %}{{ item.owner }}{% endif %}
+          </td>
+
+          <td>
+            {% if (item.deadline or 'unknown')|lower == 'unknown' %}
+              <span class="badge unknown">unknown</span>
+            {% else %}{{ item.deadline }}{% endif %}
+          </td>
+
+          <td>
+            {% if item.needs_review %}<span class="badge review">Needs review</span>
+            {% else %}<span class="ok">OK</span>{% endif %}
+          </td>
+
+          <td><span class="badge {{ 'done' if item.status == 'done' else 'open' }}">{{ item.status|title }}</span></td>
+
+          <td>
+            {% if item.status != 'done' %}
+            <form method="POST" action="/done/{{ item.id }}">
+              <button type="submit">Mark done</button>
+            </form>
+            {% else %}<span class="ok">✓</span>{% endif %}
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="8" class="empty">No items found.</td></tr>
+        {% endfor %}
+      </table>
+    </div>
+
+  </div>
+</body>
+</html>

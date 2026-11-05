@@ -28,47 +28,49 @@ SYSTEM_PROMPT = (
     '"task":"...","owner":"...","deadline":"...","needs_review":true|false}]}. '
     "Use only what is said in the transcript. "
     "If the owner or deadline is not mentioned, write 'unknown'. Never guess. "
-    "A deadline must be a specific day, date, or time period given for the task "
-    "(for example 'Friday', 'next week'). "
+    "Item types: "
+    "action_item = a task someone must do or is asked to do. "
+    "decision = a choice the group has already made. "
+    "decision_pending = a choice that still has to be made. "
+    "risk = a worry or possible problem. "
+    "A task that has a date is still an action_item, not a decision. "
+    "Return each distinct item only once. Do not invent, split, or duplicate items. "
+    "Deadline rules: "
+    "A deadline must be a specific day, date, or time period (for example 'Friday', 'next week'). "
     "Vague words like 'soon', 'later', 'ASAP' are NOT deadlines: write 'unknown'. "
-    "For risks, write 'unknown' for deadline unless a due date is stated. "
-    "For a risk, the owner is 'unknown' unless someone is clearly assigned to handle it."
-    "Classification rules: "
-"An action_item is a task someone must do, or a task the group asks someone to do. "
-"A decision is a choice the group has already made. "
-"A decision_pending is a choice that has not been made yet and still needs to be decided. "
-"Do not label a task as a decision just because it includes a date or deadline. "
-"Do not label a future discussion or decision date as a task deadline. "
-"Only use a deadline when it is explicitly attached to an action_item. "
-"Return each distinct item only once. Do not invent, split, or duplicate items. "
-"Use the shortest clear description of each item while preserving its meaning. "
-"Date rules: For an action_item, use a stated date or time period as its deadline "
-"when it describes when that task should be completed. For a decision_pending, "
-"use a stated date or time period as its deadline when it describes when the "
-"decision must be made. A date alone does not create a separate item. "
-"Do not create an action_item to handle a risk unless the transcript explicitly "
-"assigns or requests that task. Extract every explicitly stated task, even when "
-"it appears in the same sentence as a decision or another task. "
-"Owner rule: Name someone as owner only when the transcript explicitly assigns "
-"the task or responsibility to them. Merely mentioning a task does not make "
-"the speaker its owner; otherwise use 'unknown'. "
-"For a decision_pending, treat a stated time period for making the decision "
-"as its deadline, and include that time period in the decision_pending item. "
-"Do not create an action item to mitigate, investigate, or handle a risk unless "
-"the transcript explicitly says someone should do that."
+    "For an action_item, the deadline is when the task must be done. "
+    "For a decision_pending, the deadline is when the decision must be made. "
+    "For a decision or a risk, the deadline is 'unknown' unless a due date is stated. "
+    "Owner rules: "
+    "Name an owner only when the transcript explicitly assigns the task to that person, "
+    "or the person says they will do it. "
+    "Merely mentioning a task does not make the speaker its owner. "
+    "A decision has no owner: write 'unknown'. "
+    "If someone is assigned to handle a risk, make them the owner of that risk "
+    "and do not create a separate action_item for it. "
+    "Small talk and acknowledgements ('okay', 'sounds good') are not items."
+    "if the sound was not decided you write what they exactly said in that transcripts"
+    "source_quote must be the exact words from the transcript that this item is based on. "
+    "Copy them exactly, do not rephrase. "
+    "If the owner or deadline is unclear, still write 'unknown' in those fields and keep the original words in source_quote."
 )
-
 FEW_SHOT = [
     {"role": "user",
      "content": "Transcript: Priya: I will finish the API design doc by Friday."},
     {"role": "assistant",
-     "content": '{"items":[{"type":"action_item","task":"Finish API design doc","owner":"Priya","deadline":"Friday","needs_review":false}]}'},
+     "content": '{"items":[{"type":"action_item","task":"Finish API design doc","owner":"Priya","deadline":"Friday","needs_review":false,"source_quote":"I will finish the API design doc by Friday."}]}'},
+
     {"role": "user",
      "content": "Transcript: Ravi: We decided to use React. Kumar: Server cost may go up. Ravi: Someone should update the doc soon."},
     {"role": "assistant",
-     "content": '{"items":[{"type":"decision","task":"Use React for frontend","owner":"unknown","deadline":"unknown","needs_review":false},{"type":"risk","task":"Server cost may go up","owner":"unknown","deadline":"unknown","needs_review":true},{"type":"action_item","task":"Update the doc","owner":"unknown","deadline":"unknown","needs_review":true}]}'},
-]
+     "content": '{"items":[{"type":"decision","task":"Use React for frontend","owner":"unknown","deadline":"unknown","needs_review":false,"source_quote":"We decided to use React."},{"type":"risk","task":"Server cost may go up","owner":"unknown","deadline":"unknown","needs_review":true,"source_quote":"Server cost may go up."},{"type":"action_item","task":"Update the doc","owner":"unknown","deadline":"unknown","needs_review":true,"source_quote":"Someone should update the doc soon."}]}'},
 
+    {"role": "user",
+     "content": "Transcript: Meena: Are the slides ready? Arun: Not yet, I will finish them. Meena: When? Arun: Not sure, but I will do it."},
+    {"role": "assistant",
+     "content": '{"items":[{"type":"action_item","task":"Finish the slides","owner":"Arun","deadline":"unknown","needs_review":true,"source_quote":"Not sure, but I will do it."}]}'},
+]
+    
 
 def clean_json(raw):
     raw = raw.strip()
