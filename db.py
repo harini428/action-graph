@@ -106,5 +106,35 @@ def mark_done(item_id):
         conn.commit()
     finally:
         conn.close()
+def get_item(item_id):
+    conn = get_conn()
+    try:
+        cur = conn.cursor(dictionary=True)
+        cur.execute("SELECT * FROM items WHERE id = %s", (item_id,))
+        return cur.fetchone()
+    finally:
+        conn.close()
 
+
+def approve_item(item_id):
+    conn = get_conn()
+    try:
+        cur = conn.cursor()
+        cur.execute("UPDATE items SET needs_review = 0 WHERE id = %s", (item_id,))
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def update_item(item_id, owner, deadline):
+    conn = get_conn()
+    try:
+        cur = conn.cursor()
+        cur.execute(
+            "UPDATE items SET owner = %s, deadline = %s, needs_review = 0 WHERE id = %s",
+            (owner, deadline, item_id),
+        )
+        conn.commit()
+    finally:
+        conn.close()
 
